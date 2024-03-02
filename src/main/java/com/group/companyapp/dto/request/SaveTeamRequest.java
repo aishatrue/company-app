@@ -1,16 +1,16 @@
 package com.group.companyapp.dto.request;
 
-public class saveTeamRequest {
+public class SaveTeamRequest {
     private String name;
     private String manager;
     private Integer memberCount;
 
-    public saveTeamRequest(String name, String manager, Integer memberCount) {
+    public SaveTeamRequest(String name, String manager, Integer memberCount) {
         this.name = name;
         this.manager = manager;
         this.memberCount = memberCount;
     }
-    public saveTeamRequest(){
+    public SaveTeamRequest(){
 
     }
 
