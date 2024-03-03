@@ -1,5 +1,6 @@
 package com.group.companyapp.controller;
 
+import com.group.companyapp.dto.request.SaveAttendanceRequest;
 import com.group.companyapp.dto.request.SaveTeamRequest;
 import com.group.companyapp.dto.request.SaveWorkerRequest;
 import com.group.companyapp.dto.response.TeamResponse;
@@ -33,17 +34,23 @@ public class CompanyController {
 
     }
 
-
     @GetMapping("/team/get")
     public List<TeamResponse> getTeams(){
-       return companyService.getTeams();
+
+        return companyService.getTeams();
    }
 
     @GetMapping("/team/worker/get")
     public List<WorkerResponse> getWorkers(){
+
         return companyService.getWorkers();
     }
 
+    @PostMapping("team/worker/goto")
+    public  void SaveAttendance(@RequestBody SaveAttendanceRequest request){
+        companyService.SaveAttendance(request);
+    }
+  
 
 
 

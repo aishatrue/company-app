@@ -1,11 +1,14 @@
 package com.group.companyapp.service;
 
+import com.group.companyapp.domain.Attendance;
 import com.group.companyapp.domain.Team;
 import com.group.companyapp.domain.Worker;
+import com.group.companyapp.dto.request.SaveAttendanceRequest;
 import com.group.companyapp.dto.request.SaveTeamRequest;
 import com.group.companyapp.dto.request.SaveWorkerRequest;
 import com.group.companyapp.dto.response.TeamResponse;
 import com.group.companyapp.dto.response.WorkerResponse;
+import com.group.companyapp.repository.AttendanceRepository;
 import com.group.companyapp.repository.TeamRepository;
 import com.group.companyapp.repository.WorkerRepository;
 import org.springframework.stereotype.Service;
@@ -19,9 +22,12 @@ public class CompanyService {
 
     private final WorkerRepository workerRepository;
 
-    public CompanyService(TeamRepository teamRepository,WorkerRepository workerRepository) {
+    private final AttendanceRepository attendanceRepository;
+
+    public CompanyService(TeamRepository teamRepository,WorkerRepository workerRepository,AttendanceRepository attendanceRepository) {
         this.teamRepository = teamRepository;
         this.workerRepository = workerRepository;
+        this.attendanceRepository = attendanceRepository;
     }
 
     public void saveTeam(SaveTeamRequest request){
@@ -45,6 +51,11 @@ public class CompanyService {
         return workers.stream().
                 map(worker -> new WorkerResponse(worker.getName(),worker.getTeamName(),worker.getRole(),worker.getBirthday(),worker.getWorkStartDate()))
                 .collect(Collectors.toList());
+
+    }
+    public void SaveAttendance(SaveAttendanceRequest request){
+        attendanceRepository.save(new Attendance(request.getWorkerId(),request.getWorkStart(),null,request.isWorking()));
+
 
     }
 }

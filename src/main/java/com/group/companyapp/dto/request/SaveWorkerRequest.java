@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class SaveWorkerRequest {
 
-    
+
     private String name;
 
     private  String teamName;
