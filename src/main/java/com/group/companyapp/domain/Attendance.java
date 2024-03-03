@@ -18,23 +18,26 @@ public class Attendance {
 
     private Long workerId;
 
-//    private LocalDate todayDate;
-    private LocalDate workStart;
-
-
+    private String todayDate;
+    private String workStart;
 
 
     private LocalDate workEnd;
 
-    @Column(name="is_working")
-    private boolean isWorking;
+    @Column(name="work_state")
+    private boolean workState;
 
-    public Attendance(Long workerId, LocalDate workStart, LocalDate workEnd, boolean isWorking) {
+    public Attendance(Long workerId, String todayDate,String workStart, LocalDate workEnd, boolean workState) {
         this.workerId = workerId;
-      this.workStart =workStart;
+
+        this.workStart = workStart;
+        this.todayDate = workStart;
 
         this.workEnd = workEnd;
-        this.isWorking = isWorking;
+        this.workState = workState;
+    }
+
+    public Attendance() {
     }
 
     public Long getId() {
@@ -45,23 +48,21 @@ public class Attendance {
         return workerId;
     }
 
-//    public LocalDate getTodayDate() {
-//        return todayDate;
-//    }
-
-    public LocalDate getWorkStart() {
-        return workStart;
+    public String getTodayDate() {
+        return todayDate;
     }
 
 
-
+    public String getWorkStart() {
+        return workStart;
+    }
 
 
     public LocalDate getWorkEnd() {
         return workEnd;
     }
 
-    public boolean isWorking() {
-        return isWorking;
+    public boolean isWorkState() {
+        return workState;
     }
 }

@@ -54,7 +54,7 @@ public class CompanyService {
 
     }
     public void SaveAttendance(SaveAttendanceRequest request){
-        attendanceRepository.save(new Attendance(request.getWorkerId(),request.getWorkStart(),null,request.isWorking()));
+        attendanceRepository.save(new Attendance(request.getWorkerId(), request.getTodayDate(), request.getWorkStart(),null,request.isWorkState()));
 
 
     }
