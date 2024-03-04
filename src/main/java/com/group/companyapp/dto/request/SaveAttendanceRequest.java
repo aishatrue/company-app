@@ -1,14 +1,5 @@
 package com.group.companyapp.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.security.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
-
 public class SaveAttendanceRequest {
     private Long id;
 
@@ -36,6 +27,7 @@ public class SaveAttendanceRequest {
     }
 
     public String getTodayDate() {
+
         return todayDate;
     }
 

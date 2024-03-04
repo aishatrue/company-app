@@ -1,13 +1,6 @@
 package com.group.companyapp.domain;
 
 import javax.persistence.*;
-import java.security.Timestamp;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Locale;
 
 @Entity
 public class Attendance {
@@ -22,12 +15,12 @@ public class Attendance {
     private String workStart;
 
 
-    private LocalDate workEnd;
+    private String workEnd;
 
     @Column(name="work_state")
     private boolean workState;
 
-    public Attendance(Long workerId, String todayDate,String workStart, LocalDate workEnd, boolean workState) {
+    public Attendance(Long workerId, String todayDate,String workStart, String workEnd, boolean workState) {
         this.workerId = workerId;
 
         this.workStart = workStart;
@@ -58,11 +51,16 @@ public class Attendance {
     }
 
 
-    public LocalDate getWorkEnd() {
+    public String getWorkEnd() {
         return workEnd;
     }
 
     public boolean isWorkState() {
         return workState;
+    }
+
+    public void updateAttendance(String workEnd,boolean workState){
+        this.workEnd = workEnd;
+        this.workState = workState;
     }
 }

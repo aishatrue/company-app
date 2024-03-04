@@ -5,6 +5,7 @@ import com.group.companyapp.domain.Team;
 import com.group.companyapp.domain.Worker;
 import com.group.companyapp.dto.request.SaveAttendanceRequest;
 import com.group.companyapp.dto.request.SaveTeamRequest;
+import com.group.companyapp.dto.request.SaveUpdateGetOffRequest;
 import com.group.companyapp.dto.request.SaveWorkerRequest;
 import com.group.companyapp.dto.response.TeamResponse;
 import com.group.companyapp.dto.response.WorkerResponse;
@@ -12,6 +13,7 @@ import com.group.companyapp.repository.AttendanceRepository;
 import com.group.companyapp.repository.TeamRepository;
 import com.group.companyapp.repository.WorkerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,5 +59,14 @@ public class CompanyService {
         attendanceRepository.save(new Attendance(request.getWorkerId(), request.getTodayDate(), request.getWorkStart(),null,request.isWorkState()));
 
 
+    }
+    public void UpdateGetOff(SaveUpdateGetOffRequest request){
+
+
+        Attendance attendance = attendanceRepository.findByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate())
+                .orElseThrow(IllegalArgumentException::new);
+
+        attendance.updateAttendance(request.getWorkEnd(),request.isWorkState());
+        attendanceRepository.save(attendance);
     }
 }

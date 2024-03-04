@@ -2,14 +2,12 @@ package com.group.companyapp.controller;
 
 import com.group.companyapp.dto.request.SaveAttendanceRequest;
 import com.group.companyapp.dto.request.SaveTeamRequest;
+import com.group.companyapp.dto.request.SaveUpdateGetOffRequest;
 import com.group.companyapp.dto.request.SaveWorkerRequest;
 import com.group.companyapp.dto.response.TeamResponse;
 import com.group.companyapp.dto.response.WorkerResponse;
 import com.group.companyapp.service.CompanyService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,6 +47,11 @@ public class CompanyController {
     @PostMapping("team/worker/goto")
     public  void SaveAttendance(@RequestBody SaveAttendanceRequest request){
         companyService.SaveAttendance(request);
+    }
+
+    @PutMapping("team/worker/getoff")
+    public  void UpdateGetOff(@RequestBody SaveUpdateGetOffRequest request){
+        companyService.UpdateGetOff(request);
     }
   
 
