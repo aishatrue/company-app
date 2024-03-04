@@ -1,9 +1,8 @@
 package com.group.companyapp.controller;
 
-import com.group.companyapp.dto.request.SaveAttendanceRequest;
-import com.group.companyapp.dto.request.SaveTeamRequest;
-import com.group.companyapp.dto.request.SaveUpdateGetOffRequest;
-import com.group.companyapp.dto.request.SaveWorkerRequest;
+import com.group.companyapp.dto.request.*;
+import com.group.companyapp.dto.response.AttendanceResponse;
+import com.group.companyapp.dto.response.FinalAttendanceResponse;
 import com.group.companyapp.dto.response.TeamResponse;
 import com.group.companyapp.dto.response.WorkerResponse;
 import com.group.companyapp.service.CompanyService;
@@ -52,6 +51,12 @@ public class CompanyController {
     @PutMapping("team/worker/getoff")
     public  void UpdateGetOff(@RequestBody SaveUpdateGetOffRequest request){
         companyService.UpdateGetOff(request);
+    }
+
+    @GetMapping("team/worker/getworktime")
+    public FinalAttendanceResponse getWorkTime(@RequestBody GetWorkTimeRequest request){
+        return companyService.getWorkTime(request);
+
     }
   
 

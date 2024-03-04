@@ -3,18 +3,19 @@ package com.group.companyapp.service;
 import com.group.companyapp.domain.Attendance;
 import com.group.companyapp.domain.Team;
 import com.group.companyapp.domain.Worker;
-import com.group.companyapp.dto.request.SaveAttendanceRequest;
-import com.group.companyapp.dto.request.SaveTeamRequest;
-import com.group.companyapp.dto.request.SaveUpdateGetOffRequest;
-import com.group.companyapp.dto.request.SaveWorkerRequest;
+import com.group.companyapp.dto.request.*;
+import com.group.companyapp.dto.response.AttendanceResponse;
+import com.group.companyapp.dto.response.FinalAttendanceResponse;
 import com.group.companyapp.dto.response.TeamResponse;
 import com.group.companyapp.dto.response.WorkerResponse;
 import com.group.companyapp.repository.AttendanceRepository;
 import com.group.companyapp.repository.TeamRepository;
 import com.group.companyapp.repository.WorkerRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,10 +27,13 @@ public class CompanyService {
 
     private final AttendanceRepository attendanceRepository;
 
-    public CompanyService(TeamRepository teamRepository,WorkerRepository workerRepository,AttendanceRepository attendanceRepository) {
+    private final JdbcTemplate jdbcTemplate;
+
+    public CompanyService(TeamRepository teamRepository,WorkerRepository workerRepository,AttendanceRepository attendanceRepository,JdbcTemplate jdbcTemplate) {
         this.teamRepository = teamRepository;
         this.workerRepository = workerRepository;
         this.attendanceRepository = attendanceRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public void saveTeam(SaveTeamRequest request){
@@ -68,5 +72,29 @@ public class CompanyService {
 
         attendance.updateAttendance(request.getWorkEnd(),request.isWorkState());
         attendanceRepository.save(attendance);
+    }
+
+    public FinalAttendanceResponse getWorkTime(GetWorkTimeRequest request){
+        String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,today_date FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? AND worker_id = ? GROUP BY today_date";
+        List<AttendanceResponse> attendanceResponseList=  jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Date todayDate = rs.getDate("today_date");
+            long workingMinutes = rs.getLong("working_minutes");
+            return new AttendanceResponse(todayDate,workingMinutes);
+        },request.getYearMonth(),request.getWorkerId());
+
+        long sum=0;
+
+        for (AttendanceResponse attendanceResponse : attendanceResponseList) {
+
+            sum= sum+ attendanceResponse.getWorkingMinutes();
+
+        }
+
+        return new FinalAttendanceResponse(sum,attendanceResponseList);
+
+
+
+
+
     }
 }
