@@ -62,8 +62,8 @@ public class SaveWorkerRequest {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
         //원하는 데이터 포맷 지정
         String strNowDate = simpleDateFormat.format(today);
-        
 
+        //데이터 저장되는 연도랑, 이 직원의 입사년도가 동일하면 88시간을 넣어주고 아니면 120시간 넣어줌.
         if(parseInt(strNowDate)==startYear){
             return 88L;
         }else{
