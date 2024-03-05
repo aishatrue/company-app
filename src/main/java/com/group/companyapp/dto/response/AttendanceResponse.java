@@ -8,9 +8,12 @@ public class AttendanceResponse {
     private Date date;
     private long workingMinutes;
 
-    public AttendanceResponse(Date todayDate,long workingMinutes) {
+    private boolean usingDayOff;
+
+    public AttendanceResponse(Date todayDate,long workingMinutes,boolean usingDayOff) {
         this.date = todayDate;
         this.workingMinutes = workingMinutes ;
+        this.usingDayOff = usingDayOff;
     }
 
     public Date getDate() {
@@ -19,5 +22,9 @@ public class AttendanceResponse {
 
     public long getWorkingMinutes() {
         return workingMinutes;
+    }
+
+    public boolean isUsingDayOff() {
+        return usingDayOff;
     }
 }
