@@ -63,7 +63,7 @@ public class CompanyService {
 
     }
     public void SaveAttendance(SaveAttendanceRequest request){
-        attendanceRepository.save(new Attendance(request.getWorkerId(), request.getTodayDate(), request.getWorkStart(),null,request.isWorkState()));
+        attendanceRepository.save(new Attendance(request.getWorkerId(), request.getTodayDate(), request.getWorkStart(),null,request.isWorkState(),false));
 
 
     }
@@ -129,6 +129,11 @@ public class CompanyService {
             //아니라면 최소 몇일 전에 등록해야 하는지 출력
             if(diffDays >= team.getDayOffOption()){
                 System.out.println("연차 등록가능합니다.");
+                String formattedToday = new SimpleDateFormat("yyyy-MM-dd").format(todayDate);
+                attendanceRepository.save(new Attendance(request.getWorkerId(),formattedToday,formattedToday,formattedToday,false,true));
+
+                worker.updateGetoff();
+                workerRepository.save(worker);
 
             }else{
                 System.out.println("최소 "+ team.getDayOffOption()+"일 전에 등록해주세요.");

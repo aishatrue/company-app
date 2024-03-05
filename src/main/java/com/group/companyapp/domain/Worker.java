@@ -63,4 +63,7 @@ public class Worker {
     public Long getDayOff() {
         return dayOff;
     }
+    public void updateGetoff(){
+        this.dayOff = dayOff - 8 ;
+    }
 }

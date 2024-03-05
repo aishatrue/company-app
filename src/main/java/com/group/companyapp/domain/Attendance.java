@@ -20,7 +20,9 @@ public class Attendance {
     @Column(name="work_state")
     private boolean workState;
 
-    public Attendance(Long workerId, String todayDate,String workStart, String workEnd, boolean workState) {
+    private boolean usingDayOff;
+
+    public Attendance(Long workerId, String todayDate,String workStart, String workEnd, boolean workState,boolean usingDayOff) {
         this.workerId = workerId;
 
         this.workStart = workStart;
@@ -28,6 +30,7 @@ public class Attendance {
 
         this.workEnd = workEnd;
         this.workState = workState;
+        this.usingDayOff = usingDayOff;
     }
 
     public Attendance() {
