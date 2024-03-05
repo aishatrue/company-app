@@ -43,7 +43,8 @@ public class CompanyController {
     }
 
     @PostMapping("team/worker/goto")
-    public  void SaveAttendance(@RequestBody SaveAttendanceRequest request){
+    public  void SaveAttendance(@RequestBody SaveAttendanceRequest request)
+    {
         companyService.SaveAttendance(request);
     }
 

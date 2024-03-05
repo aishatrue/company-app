@@ -81,12 +81,19 @@ public class CompanyService {
 
     public FinalAttendanceResponse getWorkTime(GetWorkTimeRequest request){
         String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,today_date,using_day_off FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? AND worker_id = ? GROUP BY today_date,using_day_off";
-        List<AttendanceResponse> attendanceResponseList=  jdbcTemplate.query(sql, (rs, rowNum) -> {
+        List<AttendanceResponse> attendanceResponseList =  jdbcTemplate.query(sql, (rs, rowNum) -> {
             Date todayDate = rs.getDate("today_date");
             long workingMinutes = rs.getLong("working_minutes");
             boolean usingDayOff = rs.getBoolean("using_day_off");
             return new AttendanceResponse(todayDate,workingMinutes,usingDayOff);
         },request.getYearMonth(),request.getWorkerId());
+
+        //리스트에 값을 못 가져올 경우
+        if(attendanceResponseList == null || attendanceResponseList.isEmpty()){
+            System.out.println("데이터가 존재하지 않습니다.");
+            throw new IllegalArgumentException();
+
+        }
 
         long sum=0;
 
@@ -113,7 +120,7 @@ public class CompanyService {
             throw new RuntimeException(e);
         }
 
-        //받아온 workerId로 데이터를 조회
+        //받아온 workerId로 데이터를 조회. 없으면 익셉션 반환
         Worker worker = workerRepository.findById(request.getWorkerId())
                 .orElseThrow(IllegalArgumentException::new);
 
