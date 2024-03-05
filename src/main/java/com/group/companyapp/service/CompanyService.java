@@ -40,7 +40,8 @@ public class CompanyService {
     }
 
     public void saveTeam(SaveTeamRequest request){
-        teamRepository.save(new Team(request.getName(),request.getManager(),request.getMemberCount()));
+
+        teamRepository.save(new Team(request.getName(),request.getManager(),request.getMemberCount(),request.getDayOffOption()));
     }
 
     public void saveWorker(SaveWorkerRequest request){

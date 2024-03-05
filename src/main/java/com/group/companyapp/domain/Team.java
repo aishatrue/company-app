@@ -1,5 +1,7 @@
 package com.group.companyapp.domain;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,16 +11,20 @@ public class Team {
     private Long id;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String manager;
 
+    @Column(nullable = false)
     private Integer memberCount;
 
-    private Long dayOffOption;
 
-    public Team(String name, String manager, Integer memberCount) {
+    private Integer dayOffOption;
+
+    public Team(String name, String manager, Integer memberCount,Integer dayOffOption) {
         this.name = name;
         this.manager = manager;
         this.memberCount = memberCount;
+        this.dayOffOption = dayOffOption;
     }
     public Team(){
 
@@ -36,7 +42,7 @@ public class Team {
         return memberCount;
     }
 
-    public Long getDayOffOption() {
+    public Integer getDayOffOption() {
         return dayOffOption;
     }
 }
