@@ -145,4 +145,11 @@ public class CompanyService {
 
     }
 
+    public Long GetGetoffTime(GetDayOffRequest request){
+
+       Worker worker = workerRepository.findById(request.getWorkerId())
+                .orElseThrow(IllegalArgumentException::new);
+       return worker.getDayOff();
+    }
+
 }

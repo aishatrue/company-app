@@ -63,6 +63,12 @@ public class CompanyController {
         companyService.SaveWorkerDayOff(request);
 
     }
+
+    @GetMapping("team/worker/getdayoff")
+    public Long GetDayOff(@RequestBody GetDayOffRequest request){
+        return companyService.GetGetoffTime(request);
+
+    }
   
 
 
