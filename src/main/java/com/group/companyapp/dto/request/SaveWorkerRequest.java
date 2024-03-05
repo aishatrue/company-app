@@ -1,6 +1,11 @@
 package com.group.companyapp.dto.request;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
+
+import static java.lang.Integer.parseInt;
 
 public class SaveWorkerRequest {
 
@@ -17,6 +22,8 @@ public class SaveWorkerRequest {
 
 
     private LocalDate workStartDate;
+
+    private Long dayOff;
 
     public SaveWorkerRequest(String name, String teamName, String role, LocalDate birthday, LocalDate workStartDate) {
         this.name = name;
@@ -47,5 +54,21 @@ public class SaveWorkerRequest {
 
     public LocalDate getWorkStartDate() {
         return workStartDate;
+    }
+
+    public Long getDayOff() {
+        int startYear = workStartDate.getYear();
+        Date today = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+        //원하는 데이터 포맷 지정
+        String strNowDate = simpleDateFormat.format(today);
+        
+
+        if(parseInt(strNowDate)==startYear){
+            return 88L;
+        }else{
+            return 120L;
+        }
+
     }
 }

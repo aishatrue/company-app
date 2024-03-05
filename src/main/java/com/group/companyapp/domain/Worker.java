@@ -27,12 +27,13 @@ public class Worker {
 
 
 
-    public Worker(String name, String teamName, String role, LocalDate birthday, LocalDate workStartDate) {
+    public Worker(String name, String teamName, String role, LocalDate birthday, LocalDate workStartDate,Long dayOff) {
         this.name = name;
         this.teamName = teamName;
         this.role = role;
         this.birthday = birthday;
         this.workStartDate = workStartDate;
+        this.dayOff = dayOff;
 
     }
 

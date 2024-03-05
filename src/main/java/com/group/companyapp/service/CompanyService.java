@@ -45,7 +45,8 @@ public class CompanyService {
     }
 
     public void saveWorker(SaveWorkerRequest request){
-        workerRepository.save(new Worker(request.getName(), request.getTeamName(), request.getRole(), request.getBirthday(),request.getWorkStartDate()));
+
+        workerRepository.save(new Worker(request.getName(), request.getTeamName(), request.getRole(), request.getBirthday(),request.getWorkStartDate(), request.getDayOff()));
     }
 
     public List<TeamResponse> getTeams(){
