@@ -15,8 +15,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,10 +94,50 @@ public class CompanyService {
         }
 
         return new FinalAttendanceResponse(sum,attendanceResponseList);
+    }
 
 
+    public void SaveWorkerDayOff(SaveWorkerDayOffRequest request){
+        Date todayDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date dayOffDate;
 
 
+        try {
+            //받아오는 dayoff는 string이라서 date끼리 연산을 위해 parse를 해줌.
+            dayOffDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getDayOffDate());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        //받아온 workerId로 데이터를 조회
+        Worker worker = workerRepository.findById(request.getWorkerId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        //해당 worker의 남은 연차가 0인지 아닌지 확인하거,0이면 남은연차가 없다고 출력
+        //연차가 있으면 아래 로직 수행
+        if(worker.getDayOff()!=0){
+            //worker데이터에서 소속팀을 가져오고, 그걸로 team테이블에서 데이터를 가져옴
+            Team team = teamRepository.findByName(worker.getTeamName())
+                    .orElseThrow(IllegalArgumentException::new);
+
+            //연차 사용일과 연차를 신청하는 오늘사이의 날짜를 빼서, 일자수 차이로 변환
+            long diffSec = (dayOffDate.getTime() - todayDate.getTime()); //초 차이
+            long diffDays = diffSec / (24*60*60); //일자수 차이
+
+            //만약 그 일자 수 차이가 받아온 team데이터의 연차 등록 조건날짜보다 크거나 같으면 아래로직 수행
+            //아니라면 최소 몇일 전에 등록해야 하는지 출력
+            if(diffDays >= team.getDayOffOption()){
+                System.out.println("연차 등록가능합니다.");
+
+            }else{
+                System.out.println("최소 "+ team.getDayOffOption()+"일 전에 등록해주세요.");
+            }
+
+        }else{
+            System.out.println("남은 연차가 없습니다.");
+        }
 
     }
+
 }

@@ -22,6 +22,10 @@ public class Worker {
     @Column(nullable = false)
     private LocalDate workStartDate;
 
+    private Long dayOff;
+
+
+
 
     public Worker(String name, String teamName, String role, LocalDate birthday, LocalDate workStartDate) {
         this.name = name;
@@ -29,6 +33,7 @@ public class Worker {
         this.role = role;
         this.birthday = birthday;
         this.workStartDate = workStartDate;
+
     }
 
     public Worker(){
@@ -53,5 +58,9 @@ public class Worker {
 
     public LocalDate getWorkStartDate() {
         return workStartDate;
+    }
+
+    public Long getDayOff() {
+        return dayOff;
     }
 }

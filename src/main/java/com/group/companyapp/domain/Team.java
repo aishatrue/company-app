@@ -13,6 +13,8 @@ public class Team {
 
     private Integer memberCount;
 
+    private Long dayOffOption;
+
     public Team(String name, String manager, Integer memberCount) {
         this.name = name;
         this.manager = manager;
@@ -32,5 +34,9 @@ public class Team {
 
     public Integer getMemberCount() {
         return memberCount;
+    }
+
+    public Long getDayOffOption() {
+        return dayOffOption;
     }
 }

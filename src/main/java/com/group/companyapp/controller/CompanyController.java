@@ -58,6 +58,11 @@ public class CompanyController {
         return companyService.getWorkTime(request);
 
     }
+    @PostMapping("team/worker/dayoff")
+    public void SaveWorkerDayoff(@RequestBody SaveWorkerDayOffRequest request){
+        companyService.SaveWorkerDayOff(request);
+
+    }
   
 
 
