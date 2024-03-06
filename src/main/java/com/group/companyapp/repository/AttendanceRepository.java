@@ -11,7 +11,8 @@ public interface AttendanceRepository extends JpaRepository<Attendance,Long> {
 
     Optional<Attendance> findByWorkerIdAndTodayDate(Long workerId,String todayDate);
 
-    //worker id랑, yearmonth로 찾아야함.
+
+boolean existsByWorkerIdAndTodayDate(Long workerId,String todayDate);
 
 
 }

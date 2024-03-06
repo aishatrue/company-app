@@ -13,7 +13,6 @@ import com.group.companyapp.repository.TeamRepository;
 import com.group.companyapp.repository.WorkerRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,6 +64,29 @@ public class CompanyService {
 
     }
     public void SaveAttendance(SaveAttendanceRequest request){
+
+        //존재하지 않는 worker일 경우.
+       Worker worker = workerRepository.findById(request.getWorkerId())
+                .orElseThrow(IllegalArgumentException::new);
+
+       //이미 출근을 한 직원이 또 출근하려 할 경우 & 이미 퇴근을 한 직원이 또 출근하려 할 경우..음 안되네
+       boolean checkAttendance = attendanceRepository.existsByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate());
+
+
+        if(checkAttendance){
+            Optional<Attendance> attendance= attendanceRepository.findByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate());
+            if(attendance.get().isWorkState()){
+                System.out.println("이미 출근을 하셨는데,,잠이 덜 깨셨나요?");
+                throw new IllegalArgumentException();
+
+            }else{
+                System.out.println("이미 퇴근을 하셨는데,,또 하시려구요?");
+                throw new IllegalArgumentException();
+            }
+
+
+        }
+
         attendanceRepository.save(new Attendance(request.getWorkerId(), request.getTodayDate(), request.getWorkStart(),null,request.isWorkState(),false));
 
 
@@ -72,6 +94,7 @@ public class CompanyService {
     public void UpdateGetOff(SaveUpdateGetOffRequest request){
 
 
+        //퇴근하려는 직원이 출근하지 않았던 경우
         Attendance attendance = attendanceRepository.findByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate())
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -120,7 +143,7 @@ public class CompanyService {
             throw new RuntimeException(e);
         }
 
-        //받아온 workerId로 데이터를 조회. 없으면 익셉션 반환
+        //받아온 workerId로 데이터를 조회. 없으면 익셉션 반환₩
         Worker worker = workerRepository.findById(request.getWorkerId())
                 .orElseThrow(IllegalArgumentException::new);
 
