@@ -103,7 +103,7 @@ public class CompanyService {
     }
 
     public FinalAttendanceResponse getWorkTime(GetWorkTimeRequest request){
-        String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,today_date,using_day_off FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? AND worker_id = ? GROUP BY today_date,using_day_off";
+        String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_start,work_end))as working_minutes,today_date,using_day_off FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? AND worker_id = ? GROUP BY today_date,using_day_off";
         List<AttendanceResponse> attendanceResponseList =  jdbcTemplate.query(sql, (rs, rowNum) -> {
             Date todayDate = rs.getDate("today_date");
             long workingMinutes = rs.getLong("working_minutes");
