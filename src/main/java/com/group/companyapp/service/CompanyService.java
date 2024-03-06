@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +34,11 @@ public class CompanyService {
     }
 
     public void saveTeam(SaveTeamRequest request){
+        boolean teamExist = teamRepository.existsByName(request.getName());
+        if(teamExist){
+            System.out.println("동일한 팀이 등록되어있습니다.");
+            throw new IllegalArgumentException();
+        }
 
         teamRepository.save(new Team(request.getName(),request.getManager(),request.getMemberCount(),request.getDayOffOption()));
     }
