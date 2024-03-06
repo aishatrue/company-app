@@ -4,10 +4,7 @@ import com.group.companyapp.domain.Attendance;
 import com.group.companyapp.domain.Team;
 import com.group.companyapp.domain.Worker;
 import com.group.companyapp.dto.request.*;
-import com.group.companyapp.dto.response.AttendanceResponse;
-import com.group.companyapp.dto.response.FinalAttendanceResponse;
-import com.group.companyapp.dto.response.TeamResponse;
-import com.group.companyapp.dto.response.WorkerResponse;
+import com.group.companyapp.dto.response.*;
 import com.group.companyapp.repository.AttendanceRepository;
 import com.group.companyapp.repository.TeamRepository;
 import com.group.companyapp.repository.WorkerRepository;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +27,7 @@ public class CompanyService {
 
     private final AttendanceRepository attendanceRepository;
 
-    private final JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     public CompanyService(TeamRepository teamRepository,WorkerRepository workerRepository,AttendanceRepository attendanceRepository,JdbcTemplate jdbcTemplate) {
         this.teamRepository = teamRepository;
@@ -183,6 +181,28 @@ public class CompanyService {
        Worker worker = workerRepository.findById(request.getWorkerId())
                 .orElseThrow(IllegalArgumentException::new);
        return worker.getDayOff();
+    }
+
+    public List<FinalAllworkerTimeResponse> GetOverTime(GetOverTimeRequest request) {
+        String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,worker_id FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? GROUP BY worker_id";
+        List<AllWorkerTimeResponse> allWorkerTimeResponses = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            long workingMinutes = rs.getLong("working_minutes");
+            long workerId = rs.getLong("worker_id");
+            return new AllWorkerTimeResponse(workerId, workingMinutes);
+        }, request.getYearMonth());
+
+        List<FinalAllworkerTimeResponse> finalAllworkerTimeResponses = new ArrayList<>();
+        for (AllWorkerTimeResponse allWorkerTimeResponse : allWorkerTimeResponses) {
+            Long overTime = (allWorkerTimeResponse.getWorkingMinutes()/60)-176;
+            Optional<Worker> worker = workerRepository.findById(allWorkerTimeResponse.getWorkerId());
+
+            finalAllworkerTimeResponses.add(new FinalAllworkerTimeResponse(allWorkerTimeResponse.getWorkerId(),worker.get().getName(),overTime));
+
+
+        }
+        return finalAllworkerTimeResponses;
+
+
     }
 
 }

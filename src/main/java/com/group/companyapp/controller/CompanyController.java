@@ -1,9 +1,7 @@
 package com.group.companyapp.controller;
 
 import com.group.companyapp.dto.request.*;
-import com.group.companyapp.dto.response.FinalAttendanceResponse;
-import com.group.companyapp.dto.response.TeamResponse;
-import com.group.companyapp.dto.response.WorkerResponse;
+import com.group.companyapp.dto.response.*;
 import com.group.companyapp.service.CompanyService;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,6 +65,12 @@ public class CompanyController {
     @GetMapping("team/worker/getdayoff")
     public Long GetDayOff(@RequestBody GetDayOffRequest request){
         return companyService.GetGetoffTime(request);
+
+    }
+
+    @GetMapping("team/worker/overtime")
+    public List<FinalAllworkerTimeResponse> GetOverTime(@RequestBody GetOverTimeRequest request){
+         return companyService.GetOverTime(request);
 
     }
   
