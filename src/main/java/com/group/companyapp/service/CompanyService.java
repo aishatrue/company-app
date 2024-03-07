@@ -195,7 +195,7 @@ public class CompanyService {
 
         List<FinalAllworkerTimeResponse> finalAllworkerTimeResponses = new ArrayList<>();
         for (AllWorkerTimeResponse allWorkerTimeResponse : allWorkerTimeResponses) {
-            Long overTime = (allWorkerTimeResponse.getWorkingMinutes()/60)-176;
+            Long overTime = (allWorkerTimeResponse.getWorkingMinutes()/60)-160;
             Optional<Worker> worker = workerRepository.findById(allWorkerTimeResponse.getWorkerId());
 
             finalAllworkerTimeResponses.add(new FinalAllworkerTimeResponse(allWorkerTimeResponse.getWorkerId(),worker.get().getName(),overTime));

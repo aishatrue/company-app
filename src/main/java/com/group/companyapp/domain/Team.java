@@ -11,10 +11,10 @@ public class Team {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+
     private String manager;
 
-    @Column(nullable = false)
+
     private Integer memberCount;
 
 
