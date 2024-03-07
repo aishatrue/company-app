@@ -47,30 +47,14 @@ public class CompanyService {
 
         workerRepository.save(new Worker(request.getName(), request.getTeamName(), request.getRole(), request.getBirthday(),request.getWorkStartDate(), request.getDayOff()));
     }
-
-    public List<TeamResponse> getTeams(){
-        List<Team> teams = teamRepository.findAll();
-        return teams.stream().
-                map(team -> new TeamResponse(team.getName(),team.getManager(),team.getMemberCount()))
-                .collect(Collectors.toList());
-
-    }
-
-    public List<WorkerResponse> getWorkers(){
-        List<Worker> workers = workerRepository.findAll();
-        return workers.stream().
-                map(worker -> new WorkerResponse(worker.getName(),worker.getTeamName(),worker.getRole(),worker.getBirthday(),worker.getWorkStartDate()))
-                .collect(Collectors.toList());
-
-    }
     public void SaveAttendance(SaveAttendanceRequest request){
 
         //존재하지 않는 worker일 경우.
-       Worker worker = workerRepository.findById(request.getWorkerId())
+        Worker worker = workerRepository.findById(request.getWorkerId())
                 .orElseThrow(IllegalArgumentException::new);
 
-       //이미 출근을 한 직원이 또 출근하려 할 경우 & 이미 퇴근을 한 직원이 또 출근하려 할 경우..음 안되네
-       boolean checkAttendance = attendanceRepository.existsByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate());
+        //이미 출근을 한 직원이 또 출근하려 할 경우 & 이미 퇴근을 한 직원이 또 출근하려 할 경우..음 안되네
+        boolean checkAttendance = attendanceRepository.existsByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate());
 
 
         if(checkAttendance){
@@ -91,45 +75,6 @@ public class CompanyService {
 
 
     }
-    public void UpdateGetOff(SaveUpdateGetOffRequest request){
-
-
-        //퇴근하려는 직원이 출근하지 않았던 경우
-        Attendance attendance = attendanceRepository.findByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate())
-                .orElseThrow(IllegalArgumentException::new);
-
-        attendance.updateAttendance(request.getWorkEnd(),request.isWorkState());
-        attendanceRepository.save(attendance);
-    }
-
-    public FinalAttendanceResponse getWorkTime(GetWorkTimeRequest request){
-        String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,today_date,using_day_off FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? AND worker_id = ? GROUP BY today_date,using_day_off";
-        List<AttendanceResponse> attendanceResponseList =  jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Date todayDate = rs.getDate("today_date");
-            long workingMinutes = rs.getLong("working_minutes");
-            boolean usingDayOff = rs.getBoolean("using_day_off");
-            return new AttendanceResponse(todayDate,workingMinutes,usingDayOff);
-        },request.getYearMonth(),request.getWorkerId());
-
-        //리스트에 값을 못 가져올 경우
-        if(attendanceResponseList == null || attendanceResponseList.isEmpty()){
-            System.out.println("데이터가 존재하지 않습니다.");
-            throw new IllegalArgumentException();
-
-        }
-
-        long sum=0;
-
-        for (AttendanceResponse attendanceResponse : attendanceResponseList) {
-
-            sum= sum+ attendanceResponse.getWorkingMinutes();
-
-        }
-
-        return new FinalAttendanceResponse(sum,attendanceResponseList);
-    }
-
-
     public void SaveWorkerDayOff(SaveWorkerDayOffRequest request){
         Date todayDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -178,11 +123,26 @@ public class CompanyService {
 
     }
 
+    public List<TeamResponse> getTeams(){
+        List<Team> teams = teamRepository.findAll();
+        return teams.stream().
+                map(team -> new TeamResponse(team.getName(),team.getManager(),team.getMemberCount()))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<WorkerResponse> getWorkers(){
+        List<Worker> workers = workerRepository.findAll();
+        return workers.stream().
+                map(worker -> new WorkerResponse(worker.getName(),worker.getTeamName(),worker.getRole(),worker.getBirthday(),worker.getWorkStartDate()))
+                .collect(Collectors.toList());
+
+    }
     public Long GetGetoffTime(GetDayOffRequest request){
 
-       Worker worker = workerRepository.findById(request.getWorkerId())
+        Worker worker = workerRepository.findById(request.getWorkerId())
                 .orElseThrow(IllegalArgumentException::new);
-       return worker.getDayOff();
+        return worker.getDayOff();
     }
 
     public List<FinalAllworkerTimeResponse> GetOverTime(GetOverTimeRequest request) {
@@ -212,5 +172,50 @@ public class CompanyService {
 
 
     }
+    public FinalAttendanceResponse getWorkTime(GetWorkTimeRequest request){
+        String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,today_date,using_day_off FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? AND worker_id = ? GROUP BY today_date,using_day_off";
+        List<AttendanceResponse> attendanceResponseList =  jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Date todayDate = rs.getDate("today_date");
+            long workingMinutes = rs.getLong("working_minutes");
+            boolean usingDayOff = rs.getBoolean("using_day_off");
+            return new AttendanceResponse(todayDate,workingMinutes,usingDayOff);
+        },request.getYearMonth(),request.getWorkerId());
+
+        //리스트에 값을 못 가져올 경우
+        if(attendanceResponseList == null || attendanceResponseList.isEmpty()){
+            System.out.println("데이터가 존재하지 않습니다.");
+            throw new IllegalArgumentException();
+
+        }
+
+        long sum=0;
+
+        for (AttendanceResponse attendanceResponse : attendanceResponseList) {
+
+            sum= sum+ attendanceResponse.getWorkingMinutes();
+
+        }
+
+        return new FinalAttendanceResponse(sum,attendanceResponseList);
+    }
+
+    public void UpdateGetOff(SaveUpdateGetOffRequest request){
+
+
+        //퇴근하려는 직원이 출근하지 않았던 경우
+        Attendance attendance = attendanceRepository.findByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate())
+                .orElseThrow(IllegalArgumentException::new);
+
+        attendance.updateAttendance(request.getWorkEnd(),request.isWorkState());
+        attendanceRepository.save(attendance);
+    }
+
+
+
+
+
+
+
+
 
 }
