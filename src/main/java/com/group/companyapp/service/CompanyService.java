@@ -10,6 +10,7 @@ import com.group.companyapp.repository.TeamRepository;
 import com.group.companyapp.repository.WorkerRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,6 +34,7 @@ public class CompanyService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Transactional
     public void saveTeam(SaveTeamRequest request){
         boolean teamExist = teamRepository.existsByName(request.getName());
         if(teamExist){
@@ -43,10 +45,12 @@ public class CompanyService {
         teamRepository.save(new Team(request.getName(),request.getManager(),request.getMemberCount(),request.getDayOffOption()));
     }
 
+    @Transactional
     public void saveWorker(SaveWorkerRequest request){
 
         workerRepository.save(new Worker(request.getName(), request.getTeamName(), request.getRole(), request.getBirthday(),request.getWorkStartDate(), request.getDayOff()));
     }
+    @Transactional
     public void SaveAttendance(SaveAttendanceRequest request){
 
         //존재하지 않는 worker일 경우.
@@ -75,6 +79,7 @@ public class CompanyService {
 
 
     }
+    @Transactional
     public void SaveWorkerDayOff(SaveWorkerDayOffRequest request){
         Date todayDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -123,6 +128,7 @@ public class CompanyService {
 
     }
 
+    @Transactional
     public List<TeamResponse> getTeams(){
         List<Team> teams = teamRepository.findAll();
         return teams.stream().
@@ -131,6 +137,7 @@ public class CompanyService {
 
     }
 
+    @Transactional
     public List<WorkerResponse> getWorkers(){
         List<Worker> workers = workerRepository.findAll();
         return workers.stream().
@@ -138,6 +145,7 @@ public class CompanyService {
                 .collect(Collectors.toList());
 
     }
+    @Transactional
     public Long GetGetoffTime(GetDayOffRequest request){
 
         Worker worker = workerRepository.findById(request.getWorkerId())
@@ -145,6 +153,7 @@ public class CompanyService {
         return worker.getDayOff();
     }
 
+    @Transactional
     public List<FinalAllworkerTimeResponse> GetOverTime(GetOverTimeRequest request) {
         String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,worker_id FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? GROUP BY worker_id";
         List<AllWorkerTimeResponse> allWorkerTimeResponses = jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -172,6 +181,7 @@ public class CompanyService {
 
 
     }
+    @Transactional
     public FinalAttendanceResponse getWorkTime(GetWorkTimeRequest request){
         String sql = "SELECT SUM(TIMESTAMPDIFF(MINUTE,work_end,work_start))as working_minutes,today_date,using_day_off FROM attendance  WHERE DATE_FORMAT(today_date, '%Y-%m') = ? AND worker_id = ? GROUP BY today_date,using_day_off";
         List<AttendanceResponse> attendanceResponseList =  jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -199,6 +209,7 @@ public class CompanyService {
         return new FinalAttendanceResponse(sum,attendanceResponseList);
     }
 
+    @Transactional
     public void UpdateGetOff(SaveUpdateGetOffRequest request){
 
 
