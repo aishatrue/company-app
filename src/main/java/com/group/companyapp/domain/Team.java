@@ -15,6 +15,7 @@ public class Team {
     private String manager;
 
 
+    @Column(name="member_count")
     private Integer memberCount;
 
 

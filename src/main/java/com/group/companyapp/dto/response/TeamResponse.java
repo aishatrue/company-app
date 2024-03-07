@@ -3,7 +3,7 @@ package com.group.companyapp.dto.response;
 public class TeamResponse {
   private String teamName;
   private String manager;
-  private int memberCount;
+  private Integer memberCount;
 
     public TeamResponse(String teamName, String manager, Integer memberCount) {
         this.teamName = teamName;
@@ -19,7 +19,7 @@ public class TeamResponse {
         return manager;
     }
 
-    public int getMemberCount() {
+    public Integer getMemberCount() {
         return memberCount;
     }
 }
