@@ -11,6 +11,7 @@ public class Worker {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private  String teamName;
 
     @Column(nullable = false)
