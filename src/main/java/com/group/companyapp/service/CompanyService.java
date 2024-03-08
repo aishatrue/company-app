@@ -166,7 +166,7 @@ public class CompanyService {
         for (AllWorkerTimeResponse allWorkerTimeResponse : allWorkerTimeResponses) {
             Long overTime;
             System.out.println(allWorkerTimeResponse.getWorkingMinutes()/60);
-            if((allWorkerTimeResponse.getWorkingMinutes()/60) < 160){
+            if((allWorkerTimeResponse.getWorkingMinutes()/60) <= 160){
                 overTime = 0L;
             }else{
                 overTime= (allWorkerTimeResponse.getWorkingMinutes()/60)-160;
