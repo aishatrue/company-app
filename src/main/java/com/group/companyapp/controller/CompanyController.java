@@ -29,7 +29,7 @@ public class CompanyController {
     }
 
     @GetMapping("/team/get")
-    public List<TeamResponse> getTeams(){
+    public List<TestResponse> getTeams(){
 
         return companyService.getTeams();
    }

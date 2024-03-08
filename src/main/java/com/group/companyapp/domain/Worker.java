@@ -10,10 +10,6 @@ public class Worker {
     private Long id;
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private  String teamName;
-
     @Column(nullable = false)
     private  String role;
 
@@ -22,6 +18,8 @@ public class Worker {
 
     @Column(nullable = false)
     private LocalDate workStartDate;
+
+    private  String teamName;
 
     private Long dayOff;
 

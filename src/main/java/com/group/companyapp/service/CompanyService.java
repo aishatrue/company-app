@@ -57,7 +57,7 @@ public class CompanyService {
         Worker worker = workerRepository.findById(request.getWorkerId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        //이미 출근을 한 직원이 또 출근하려 할 경우 & 이미 퇴근을 한 직원이 또 출근하려 할 경우..음 안되네
+        //이미 출근을 한 직원이 또 출근하려 할 경우 & 이미 퇴근을 한 직원이 또 출근하려 할 경우..
         boolean checkAttendance = attendanceRepository.existsByWorkerIdAndTodayDate(request.getWorkerId(), request.getTodayDate());
 
 
@@ -129,11 +129,37 @@ public class CompanyService {
     }
 
     @Transactional
-    public List<TeamResponse> getTeams(){
-        List<Team> teams = teamRepository.findAll();
-        return teams.stream().
-                map(team -> new TeamResponse(team.getName(),team.getManager(),team.getMemberCount()))
-                .collect(Collectors.toList());
+    public List<TestResponse> getTeams(){
+        String sql ="select A.name as teamName,count(B.name) as memberCount from team as A left join worker as B on A.name = B.team_name group by A.name";
+        List<TeamResponse> teamResponses = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            String teamName = rs.getString("teamName");
+            Integer memberCount = rs.getInt("memberCount");
+            return new TeamResponse(teamName,memberCount);
+        });
+        List<TestResponse> testResponses = new ArrayList<>();
+        for (TeamResponse teamResponse : teamResponses) {
+             boolean isWorker = workerRepository.existsByTeamNameAndRole(teamResponse.getTeamName(),"manager");
+             Worker worker = workerRepository.findByTeamNameAndRole(teamResponse.getTeamName(),"manager");
+             if(isWorker){
+                 testResponses.add(new TestResponse(teamResponse.getTeamName(), worker.getName(), teamResponse.getMemberCount()));
+             }else{
+                 testResponses.add(new TestResponse(teamResponse.getTeamName(),null,teamResponse.getMemberCount()));
+
+             }
+
+
+
+
+        }
+        return testResponses;
+
+
+
+
+//        List<Team> teams = teamRepository.findAll();
+//        return teams.stream().
+//                map(team -> new TeamResponse(team.getName(),team.getManager(),team.getMemberCount()))
+//                .collect(Collectors.toList());
 
     }
 
