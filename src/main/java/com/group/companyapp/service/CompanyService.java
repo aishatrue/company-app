@@ -148,18 +148,10 @@ public class CompanyService {
              }
 
 
-
-
         }
         return testResponses;
 
 
-
-
-//        List<Team> teams = teamRepository.findAll();
-//        return teams.stream().
-//                map(team -> new TeamResponse(team.getName(),team.getManager(),team.getMemberCount()))
-//                .collect(Collectors.toList());
 
     }
 
