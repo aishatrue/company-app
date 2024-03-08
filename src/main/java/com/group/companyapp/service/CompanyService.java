@@ -112,8 +112,8 @@ public class CompanyService {
             //아니라면 최소 몇일 전에 등록해야 하는지 출력
             if(diffDays >= team.getDayOffOption()){
                 System.out.println("연차 등록가능합니다.");
-                String formattedToday = new SimpleDateFormat("yyyy-MM-dd").format(todayDate);
-                attendanceRepository.save(new Attendance(request.getWorkerId(),formattedToday,formattedToday,formattedToday,false,true));
+                String formattedDayOff = new SimpleDateFormat("yyyy-MM-dd").format(dayOffDate);
+                attendanceRepository.save(new Attendance(request.getWorkerId(),formattedDayOff,formattedDayOff,formattedDayOff,false,true));
 
                 worker.updateGetoff();
                 workerRepository.save(worker);
